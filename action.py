@@ -1,4 +1,6 @@
-from Piece import *
+from piece import *
+
+
 class Action:
 
     _actionName = ""
@@ -12,31 +14,31 @@ class Action:
     _pieceItemB = None
 
     def __init__(self, actionName):
-        _actionName = actionName
+        self._actionName = actionName
 
-    def GetActionName(self):
+    def get_action_name(self):
         return self._actionName
 
-    def SetPieceA(self, pieceA):
+    def set_piece_a(self, pieceA):
         self._pieceItemA = pieceA
 
-    def SetPieceB(self, pieceB):
+    def set_piece_b(self, pieceB):
         self._pieceItemB = pieceB
 
-    def SetOriginalPos(self, pos):
+    def set_original_pos(self, pos):
         self._originalPos = pos
 
-    def SetNewPos(self, pos):
+    def set_new_pos(self, pos):
         self._newPos = pos
 
-    def GetPieceA(self):
+    def get_piece_a(self):
         return self._pieceItemA
 
-    def GetPieceB(self):
+    def get_piece_b(self):
         return self._pieceItemB
 
-    def GetOriginalPos(self):
+    def get_original_pos(self):
         return self._originalPos
 
-    def GetNewPos(self):
+    def get_new_pos(self):
         return self._newPos

@@ -1,4 +1,5 @@
-from Piece import *
+from piece import *
+
 
 class Board:
     PieceList = []
@@ -8,24 +9,23 @@ class Board:
     def __init__(self):
         pass
 
-    def SetPieces(self, pieces):
+    def set_pieces(self, pieces):
         self.PieceList = pieces
 
-    def AddPiece(self, pc):
+    def add_piece(self, pc):
         self.PieceList.append(pc)
 
-    def SetCenterPos(self, x, y):
+    def set_center_pos(self, x, y):
         self._CenterPos = PiecePoint(x, y)
 
-    def GetCenterPos(self):
+    def get_center_pos(self):
         return self._CenterPos
 
-    def SwitchDirection(self):
+    def switch_direction(self):
         self.Direction = (self.Direction + 1) % 2
-        #resort pieces
-        #TODO
+        # resort pieces
+        # TODO
 
-    def Revert(self):
-        #TODO
+    def revert(self):
+        # TODO
         pass
-
