@@ -2,15 +2,15 @@ from piece import *
 
 
 class Action:
-
+    #  "Move", "Eat"
     _actionName = ""
-
+    #  first piece
     _pieceItemA = None
 
     _originalPos = None
 
     _newPos = None
-
+    #  second piece
     _pieceItemB = None
 
     def __init__(self, actionName):
