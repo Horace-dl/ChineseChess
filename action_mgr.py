@@ -27,6 +27,8 @@ class ActionManager:
         elif action_name == "Eat":
             act.set_piece_a(para[0])
             act.set_piece_b(para[1])
+            act.set_original_pos(para[2])
+            act.set_new_pos(para[3])
         else:
             raise Exception("ActionManager - execute - Not supported action")
         self.__add_action(act)
@@ -41,10 +43,10 @@ class ActionManager:
         elif act_name == "Eat":
             piece_first = act.get_piece_a()
             piece_second = act.get_piece_b()
-            pos_original = act.get_original_pos()
-            pos_new = act.get_new_pos()
-            self._canvas_object.try_move_piece(piece_first, pos_original.get_x_pos(), pos_original.get_y_pos(), True)
-            self._canvas_object.try_move_piece(piece_second, pos_new.get_x_pos(), pos_new.get_y_pos(), True)
+            pos_original = PiecePoint(act.get_original_pos().get_x_pos(), act.get_original_pos().get_y_pos())
+            pos_new = PiecePoint(act.get_new_pos().get_x_pos(), act.get_new_pos().get_y_pos())
+            self._canvas_object.undo_knock_over(piece_first, piece_second, pos_original, pos_new)
+
         else:
             raise Exception("ActionManager - undo - Not supported action")
         self._action_list.pop()

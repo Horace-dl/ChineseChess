@@ -68,12 +68,16 @@ class CanvasBoard:
         self._rule.set_length_of_one_grid(interval_x)
         self._rule.set_pieces_list(self._all_piece_list)
 
-        self._board_canvas.create_line(interval_x, interval_y, CANVAS_WIDTH - interval_x, interval_y, fill="#476042", width=2)
-        self._board_canvas.create_line(interval_x, interval_y, interval_x, CANVAS_HEIGHT - interval_y, fill="#476042", width=2)
+        self._board_canvas.create_line(interval_x, interval_y, CANVAS_WIDTH - interval_x, interval_y, fill="#476042",
+                                       width=2)
+        self._board_canvas.create_line(interval_x, interval_y, interval_x, CANVAS_HEIGHT - interval_y, fill="#476042",
+                                       width=2)
 
-        self._board_canvas.create_line(CANVAS_WIDTH - interval_x, interval_y, CANVAS_WIDTH - interval_x, CANVAS_HEIGHT - interval_y,
+        self._board_canvas.create_line(CANVAS_WIDTH - interval_x, interval_y, CANVAS_WIDTH - interval_x,
+                                       CANVAS_HEIGHT - interval_y,
                                        fill="#476042", width=2)
-        self._board_canvas.create_line(interval_x, CANVAS_HEIGHT - interval_y, CANVAS_WIDTH - interval_x, CANVAS_HEIGHT - interval_y,
+        self._board_canvas.create_line(interval_x, CANVAS_HEIGHT - interval_y, CANVAS_WIDTH - interval_x,
+                                       CANVAS_HEIGHT - interval_y,
                                        fill="#476042", width=2)
 
         self._board_canvas.create_line(single_grid_width, single_grid_height, CANVAS_WIDTH - single_grid_width,
@@ -89,111 +93,142 @@ class CanvasBoard:
                                        fill="#476042", width=4)
 
         for i in range(8):
-            self._board_canvas.create_line(interval_x + i * interval_x, interval_y, interval_x + i * interval_x, 4 * interval_y + interval_y,
+            self._board_canvas.create_line(interval_x + i * interval_x, interval_y, interval_x + i * interval_x,
+                                           4 * interval_y + interval_y,
                                            fill="#476042", width=2)
-            self._board_canvas.create_line(interval_x + i * interval_x, 5 * interval_y + interval_y, interval_x + i * interval_x,
+            self._board_canvas.create_line(interval_x + i * interval_x, 5 * interval_y + interval_y,
+                                           interval_x + i * interval_x,
                                            CANVAS_HEIGHT - interval_y, fill="#476042", width=2)
 
         for i in range(9):
-            self._board_canvas.create_line(interval_x, interval_y + i * interval_y, CANVAS_WIDTH - interval_x, interval_y + i * interval_y,
+            self._board_canvas.create_line(interval_x, interval_y + i * interval_y, CANVAS_WIDTH - interval_x,
+                                           interval_y + i * interval_y,
                                            fill="#476042", width=2)
 
         for i in range(9):
             for j in range(8):
                 if (i == 1 or i == 7) and (j == 2 or j == 7):
                     # cannon pos
-                    self._board_canvas.create_line(interval_x + i * interval_x - 12, interval_y + j * interval_y - 4, interval_x + i * interval_x - 4,
+                    self._board_canvas.create_line(interval_x + i * interval_x - 12, interval_y + j * interval_y - 4,
+                                                   interval_x + i * interval_x - 4,
                                                    interval_y + j * interval_y - 4, fill="#476042", width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y - 12, interval_x + i * interval_x - 4,
+                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y - 12,
+                                                   interval_x + i * interval_x - 4,
                                                    interval_y + j * interval_y - 4, fill="#476042", width=2)
 
-                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y - 12, interval_x + i * interval_x + 4,
+                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y - 12,
+                                                   interval_x + i * interval_x + 4,
                                                    interval_y + j * interval_y - 4, fill="#476042",
                                                    width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y - 4, interval_x + i * interval_x + 12,
+                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y - 4,
+                                                   interval_x + i * interval_x + 12,
                                                    interval_y + j * interval_y - 4, fill="#476042",
                                                    width=2)
 
-                    self._board_canvas.create_line(interval_x + i * interval_x - 12, interval_y + j * interval_y + 4, interval_x + i * interval_x - 4,
+                    self._board_canvas.create_line(interval_x + i * interval_x - 12, interval_y + j * interval_y + 4,
+                                                   interval_x + i * interval_x - 4,
                                                    interval_y + j * interval_y + 4, fill="#476042",
                                                    width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y + 4, interval_x + i * interval_x + 4,
+                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y + 4,
+                                                   interval_x + i * interval_x + 4,
                                                    interval_y + j * interval_y + 12, fill="#476042",
                                                    width=2)
 
-                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y + 4, interval_x + i * interval_x + 12,
+                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y + 4,
+                                                   interval_x + i * interval_x + 12,
                                                    interval_y + j * interval_y + 4, fill="#476042",
                                                    width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y + 4, interval_x + i * interval_x - 4,
+                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y + 4,
+                                                   interval_x + i * interval_x - 4,
                                                    interval_y + j * interval_y + 12, fill="#476042",
                                                    width=2)
 
                     # guard pos
                 if (i == 2 or i == 4 or i == 6) and (j == 3 or j == 6):
-                    self._board_canvas.create_line(interval_x + i * interval_x - 12, interval_y + j * interval_y - 4, interval_x + i * interval_x - 4,
+                    self._board_canvas.create_line(interval_x + i * interval_x - 12, interval_y + j * interval_y - 4,
+                                                   interval_x + i * interval_x - 4,
                                                    interval_y + j * interval_y - 4, fill="#476042",
                                                    width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y - 12, interval_x + i * interval_x - 4,
-                                                   interval_y + j * interval_y - 4, fill="#476042",
-                                                   width=2)
-
-                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y - 12, interval_x + i * interval_x + 4,
-                                                   interval_y + j * interval_y - 4, fill="#476042",
-                                                   width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y - 4, interval_x + i * interval_x + 12,
+                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y - 12,
+                                                   interval_x + i * interval_x - 4,
                                                    interval_y + j * interval_y - 4, fill="#476042",
                                                    width=2)
 
-                    self._board_canvas.create_line(interval_x + i * interval_x - 12, interval_y + j * interval_y + 4, interval_x + i * interval_x - 4,
+                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y - 12,
+                                                   interval_x + i * interval_x + 4,
+                                                   interval_y + j * interval_y - 4, fill="#476042",
+                                                   width=2)
+                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y - 4,
+                                                   interval_x + i * interval_x + 12,
+                                                   interval_y + j * interval_y - 4, fill="#476042",
+                                                   width=2)
+
+                    self._board_canvas.create_line(interval_x + i * interval_x - 12, interval_y + j * interval_y + 4,
+                                                   interval_x + i * interval_x - 4,
                                                    interval_y + j * interval_y + 4, fill="#476042",
                                                    width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y + 4, interval_x + i * interval_x + 4,
+                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y + 4,
+                                                   interval_x + i * interval_x + 4,
                                                    interval_y + j * interval_y + 12, fill="#476042",
                                                    width=2)
 
-                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y + 4, interval_x + i * interval_x + 12,
+                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y + 4,
+                                                   interval_x + i * interval_x + 12,
                                                    interval_y + j * interval_y + 4, fill="#476042",
                                                    width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y + 4, interval_x + i * interval_x - 4,
+                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y + 4,
+                                                   interval_x + i * interval_x - 4,
                                                    interval_y + j * interval_y + 12, fill="#476042",
                                                    width=2)
                 if i == 0 and (j == 3 or j == 6):
-                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y - 12, interval_x + i * interval_x + 4,
+                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y - 12,
+                                                   interval_x + i * interval_x + 4,
                                                    interval_y + j * interval_y - 4, fill="#476042",
                                                    width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y - 4, interval_x + i * interval_x + 12,
+                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y - 4,
+                                                   interval_x + i * interval_x + 12,
                                                    interval_y + j * interval_y - 4, fill="#476042",
                                                    width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y + 4, interval_x + i * interval_x + 4,
+                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y + 4,
+                                                   interval_x + i * interval_x + 4,
                                                    interval_y + j * interval_y + 12, fill="#476042",
                                                    width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y + 4, interval_x + i * interval_x + 12,
+                    self._board_canvas.create_line(interval_x + i * interval_x + 4, interval_y + j * interval_y + 4,
+                                                   interval_x + i * interval_x + 12,
                                                    interval_y + j * interval_y + 4, fill="#476042",
                                                    width=2)
 
                 if i == 8 and (j == 3 or j == 6):
-                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y - 12, interval_x + i * interval_x - 4,
+                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y - 12,
+                                                   interval_x + i * interval_x - 4,
                                                    interval_y + j * interval_y - 4, fill="#476042",
                                                    width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y - 4, interval_x + i * interval_x - 12,
+                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y - 4,
+                                                   interval_x + i * interval_x - 12,
                                                    interval_y + j * interval_y - 4, fill="#476042",
                                                    width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y + 4, interval_x + i * interval_x - 4,
+                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y + 4,
+                                                   interval_x + i * interval_x - 4,
                                                    interval_y + j * interval_y + 12, fill="#476042",
                                                    width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y + 4, interval_x + i * interval_x - 12,
+                    self._board_canvas.create_line(interval_x + i * interval_x - 4, interval_y + j * interval_y + 4,
+                                                   interval_x + i * interval_x - 12,
                                                    interval_y + j * interval_y + 4, fill="#476042",
                                                    width=2)
 
                 if i == 3 and j == 2:
-                    self._board_canvas.create_line(interval_x + i * interval_x, interval_y + j * interval_y, interval_x + 5 * interval_x, interval_y,
+                    self._board_canvas.create_line(interval_x + i * interval_x, interval_y + j * interval_y,
+                                                   interval_x + 5 * interval_x, interval_y,
                                                    fill="#476042", width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x, interval_y, interval_x + 5 * interval_x, interval_y + interval_y * j,
+                    self._board_canvas.create_line(interval_x + i * interval_x, interval_y, interval_x + 5 * interval_x,
+                                                   interval_y + interval_y * j,
                                                    fill="#476042", width=2)
                 if i == 3 and j == 7:
-                    self._board_canvas.create_line(interval_x + i * interval_x, interval_y + j * interval_y, interval_x + 5 * interval_x,
+                    self._board_canvas.create_line(interval_x + i * interval_x, interval_y + j * interval_y,
+                                                   interval_x + 5 * interval_x,
                                                    interval_y + 9 * interval_y, fill="#476042", width=2)
-                    self._board_canvas.create_line(interval_x + i * interval_x, CANVAS_HEIGHT - interval_y, interval_x + 5 * interval_x,
+                    self._board_canvas.create_line(interval_x + i * interval_x, CANVAS_HEIGHT - interval_y,
+                                                   interval_x + 5 * interval_x,
                                                    interval_y + interval_y * j, fill="#476042", width=2)
 
         filename0 = PhotoImage(file="Res\\ch.png")
@@ -220,156 +255,164 @@ class CanvasBoard:
         '''
         #  Rook - Black
         rook_b_piece0 = Piece("BLACK", "Rook", 0, PiecePoint(self._all_pieces_positions[0].pos_x,
-                                                           self._all_pieces_positions[0].pos_y), "Res\\Rook-b.png")
+                                                             self._all_pieces_positions[0].pos_y), "Res\\Rook-b.png")
         self._all_piece_list.append(rook_b_piece0)
 
         rook_b_piece1 = Piece("BLACK", "Rook", 1, PiecePoint(self._all_pieces_positions[80].pos_x,
-                                                           self._all_pieces_positions[80].pos_y), "Res\\Rook-b.png")
+                                                             self._all_pieces_positions[80].pos_y), "Res\\Rook-b.png")
         self._all_piece_list.append(rook_b_piece1)
 
         # Rook - Red
         rook_r_piece0 = Piece("RED", "Rook", 0, PiecePoint(self._all_pieces_positions[9].pos_x,
-                                                         self._all_pieces_positions[9].pos_y), "Res\\Rook-r.png")
+                                                           self._all_pieces_positions[9].pos_y), "Res\\Rook-r.png")
         self._all_piece_list.append(rook_r_piece0)
 
         rook_r_piece1 = Piece("RED", "Rook", 1, PiecePoint(self._all_pieces_positions[89].pos_x,
-                                                         self._all_pieces_positions[89].pos_y), "Res\\Rook-r.png")
+                                                           self._all_pieces_positions[89].pos_y), "Res\\Rook-r.png")
         self._all_piece_list.append(rook_r_piece1)
 
         # Knight - Black
         knight_b_piece0 = Piece("BLACK", "Knight", 0, PiecePoint(self._all_pieces_positions[10].pos_x,
-                                                               self._all_pieces_positions[10].pos_y),
-                              "Res\\Knight-b.png")
+                                                                 self._all_pieces_positions[10].pos_y),
+                                "Res\\Knight-b.png")
         self._all_piece_list.append(knight_b_piece0)
 
         knight_b_piece1 = Piece("BLACK", "Knight", 1, PiecePoint(self._all_pieces_positions[70].pos_x,
-                                                               self._all_pieces_positions[70].pos_y),
-                              "Res\\Knight-b.png")
+                                                                 self._all_pieces_positions[70].pos_y),
+                                "Res\\Knight-b.png")
         self._all_piece_list.append(knight_b_piece1)
         # Knight - Red
         knight_r_piece0 = Piece("RED", "Knight", 0, PiecePoint(self._all_pieces_positions[19].pos_x,
-                                                             self._all_pieces_positions[19].pos_y), "Res\\Knight-r.png")
+                                                               self._all_pieces_positions[19].pos_y),
+                                "Res\\Knight-r.png")
         self._all_piece_list.append(knight_r_piece0)
 
         knight_r_piece1 = Piece("RED", "Knight", 1, PiecePoint(self._all_pieces_positions[79].pos_x,
-                                                             self._all_pieces_positions[79].pos_y), "Res\\Knight-r.png")
+                                                               self._all_pieces_positions[79].pos_y),
+                                "Res\\Knight-r.png")
         self._all_piece_list.append(knight_r_piece1)
 
         # Ministor - Black
         minister_b_piece0 = Piece("BLACK", "Minister", 0, PiecePoint(self._all_pieces_positions[20].pos_x,
-                                                                   self._all_pieces_positions[20].pos_y),
-                                "Res\\Minister-b.png")
+                                                                     self._all_pieces_positions[20].pos_y),
+                                  "Res\\Minister-b.png")
         self._all_piece_list.append(minister_b_piece0)
 
         minister_b_piece1 = Piece("BLACK", "Minister", 1, PiecePoint(self._all_pieces_positions[60].pos_x,
-                                                                   self._all_pieces_positions[60].pos_y),
-                                "Res\\Minister-b.png")
+                                                                     self._all_pieces_positions[60].pos_y),
+                                  "Res\\Minister-b.png")
         self._all_piece_list.append(minister_b_piece1)
         # Ministor - Red
         minister_r_piece0 = Piece("RED", "Minister", 0, PiecePoint(self._all_pieces_positions[29].pos_x,
-                                                                 self._all_pieces_positions[29].pos_y),
-                                "Res\\Minister-r.png")
+                                                                   self._all_pieces_positions[29].pos_y),
+                                  "Res\\Minister-r.png")
         self._all_piece_list.append(minister_r_piece0)
 
         minister_r_piece1 = Piece("RED", "Minister", 1, PiecePoint(self._all_pieces_positions[69].pos_x,
-                                                                 self._all_pieces_positions[69].pos_y),
-                                "Res\\Minister-r.png")
+                                                                   self._all_pieces_positions[69].pos_y),
+                                  "Res\\Minister-r.png")
         self._all_piece_list.append(minister_r_piece1)
 
         # Soldier - Black
         soldier_b_piece0 = Piece("BLACK", "Soldier", 0, PiecePoint(self._all_pieces_positions[30].pos_x,
-                                                                 self._all_pieces_positions[30].pos_y),
-                               "Res\\Soldier-b.png")
+                                                                   self._all_pieces_positions[30].pos_y),
+                                 "Res\\Soldier-b.png")
         self._all_piece_list.append(soldier_b_piece0)
 
         soldier_b_piece1 = Piece("BLACK", "Soldier", 1, PiecePoint(self._all_pieces_positions[50].pos_x,
-                                                                 self._all_pieces_positions[50].pos_y),
-                               "Res\\Soldier-b.png")
+                                                                   self._all_pieces_positions[50].pos_y),
+                                 "Res\\Soldier-b.png")
         self._all_piece_list.append(soldier_b_piece1)
         # Soldier - Red
         soldier_r_piece0 = Piece("RED", "Soldier", 0, PiecePoint(self._all_pieces_positions[39].pos_x,
-                                                               self._all_pieces_positions[39].pos_y),
-                               "Res\\Soldier-r.png")
+                                                                 self._all_pieces_positions[39].pos_y),
+                                 "Res\\Soldier-r.png")
         self._all_piece_list.append(soldier_r_piece0)
 
         soldier_r_piece1 = Piece("RED", "Soldier", 1, PiecePoint(self._all_pieces_positions[59].pos_x,
-                                                               self._all_pieces_positions[59].pos_y),
-                               "Res\\Soldier-r.png")
+                                                                 self._all_pieces_positions[59].pos_y),
+                                 "Res\\Soldier-r.png")
         self._all_piece_list.append(soldier_r_piece1)
 
         # General - Black
         general_b_piece0 = Piece("BLACK", "General", 0, PiecePoint(self._all_pieces_positions[40].pos_x,
-                                                                 self._all_pieces_positions[40].pos_y),
-                               "Res\\General.png")
+                                                                   self._all_pieces_positions[40].pos_y),
+                                 "Res\\General.png")
         self._all_piece_list.append(general_b_piece0)
 
         # Marshal - Red
         marshal_r_piece0 = Piece("RED", "Marshal", 0, PiecePoint(self._all_pieces_positions[49].pos_x,
-                                                               self._all_pieces_positions[49].pos_y),
-                               "Res\\Marshal.png")
+                                                                 self._all_pieces_positions[49].pos_y),
+                                 "Res\\Marshal.png")
         self._all_piece_list.append(marshal_r_piece0)
         self._rule.set_center_pos(PiecePoint(self._all_pieces_positions[49].pos_x,
                                              self._all_pieces_positions[49].pos_y))
 
         # Cannon - Black
         cannon_b_piece0 = Piece("BLACK", "Cannon", 0, PiecePoint(self._all_pieces_positions[12].pos_x,
-                                                               self._all_pieces_positions[12].pos_y),
-                              "Res\\Cannon-b.png")
+                                                                 self._all_pieces_positions[12].pos_y),
+                                "Res\\Cannon-b.png")
         self._all_piece_list.append(cannon_b_piece0)
 
         cannon_b_piece1 = Piece("BLACK", "Cannon", 1, PiecePoint(self._all_pieces_positions[72].pos_x,
-                                                               self._all_pieces_positions[72].pos_y),
-                              "Res\\Cannon-b.png")
+                                                                 self._all_pieces_positions[72].pos_y),
+                                "Res\\Cannon-b.png")
         self._all_piece_list.append(cannon_b_piece1)
         # Cannon - Red
         cannon_r_piece0 = Piece("RED", "Cannon", 0, PiecePoint(self._all_pieces_positions[17].pos_x,
-                                                             self._all_pieces_positions[17].pos_y), "Res\\Cannon-r.png")
+                                                               self._all_pieces_positions[17].pos_y),
+                                "Res\\Cannon-r.png")
         self._all_piece_list.append(cannon_r_piece0)
 
         cannon_r_piece1 = Piece("RED", "Cannon", 1, PiecePoint(self._all_pieces_positions[77].pos_x,
-                                                             self._all_pieces_positions[77].pos_y), "Res\\Cannon-r.png")
+                                                               self._all_pieces_positions[77].pos_y),
+                                "Res\\Cannon-r.png")
         self._all_piece_list.append(cannon_r_piece1)
 
         # Guard - Black
         guard_b_piece0 = Piece("BLACK", "Guard", 0, PiecePoint(self._all_pieces_positions[3].pos_x,
-                                                             self._all_pieces_positions[3].pos_y), "Res\\Guard-b.png")
+                                                               self._all_pieces_positions[3].pos_y), "Res\\Guard-b.png")
         self._all_piece_list.append(guard_b_piece0)
 
         guard_b_piece1 = Piece("BLACK", "Guard", 1, PiecePoint(self._all_pieces_positions[23].pos_x,
-                                                             self._all_pieces_positions[23].pos_y), "Res\\Guard-b.png")
+                                                               self._all_pieces_positions[23].pos_y),
+                               "Res\\Guard-b.png")
         self._all_piece_list.append(guard_b_piece1)
 
         guard_b_piece2 = Piece("BLACK", "Guard", 2, PiecePoint(self._all_pieces_positions[43].pos_x,
-                                                             self._all_pieces_positions[43].pos_y), "Res\\Guard-b.png")
+                                                               self._all_pieces_positions[43].pos_y),
+                               "Res\\Guard-b.png")
         self._all_piece_list.append(guard_b_piece2)
 
         guard_b_piece3 = Piece("BLACK", "Guard", 3, PiecePoint(self._all_pieces_positions[63].pos_x,
-                                                             self._all_pieces_positions[63].pos_y), "Res\\Guard-b.png")
+                                                               self._all_pieces_positions[63].pos_y),
+                               "Res\\Guard-b.png")
         self._all_piece_list.append(guard_b_piece3)
 
         guard_b_piece4 = Piece("BLACK", "Guard", 4, PiecePoint(self._all_pieces_positions[83].pos_x,
-                                                             self._all_pieces_positions[83].pos_y), "Res\\Guard-b.png")
+                                                               self._all_pieces_positions[83].pos_y),
+                               "Res\\Guard-b.png")
         self._all_piece_list.append(guard_b_piece4)
 
         # Guard - Red
         guard_r_piece0 = Piece("RED", "Guard", 0, PiecePoint(self._all_pieces_positions[6].pos_x,
-                                                           self._all_pieces_positions[6].pos_y), "Res\\Guard-r.png")
+                                                             self._all_pieces_positions[6].pos_y), "Res\\Guard-r.png")
         self._all_piece_list.append(guard_r_piece0)
 
         guard_r_piece1 = Piece("RED", "Guard", 1, PiecePoint(self._all_pieces_positions[26].pos_x,
-                                                           self._all_pieces_positions[26].pos_y), "Res\\Guard-r.png")
+                                                             self._all_pieces_positions[26].pos_y), "Res\\Guard-r.png")
         self._all_piece_list.append(guard_r_piece1)
 
         guard_r_piece2 = Piece("RED", "Guard", 2, PiecePoint(self._all_pieces_positions[46].pos_x,
-                                                           self._all_pieces_positions[46].pos_y), "Res\\Guard-r.png")
+                                                             self._all_pieces_positions[46].pos_y), "Res\\Guard-r.png")
         self._all_piece_list.append(guard_r_piece2)
 
         guard_r_piece3 = Piece("RED", "Guard", 3, PiecePoint(self._all_pieces_positions[66].pos_x,
-                                                           self._all_pieces_positions[66].pos_y), "Res\\Guard-r.png")
+                                                             self._all_pieces_positions[66].pos_y), "Res\\Guard-r.png")
         self._all_piece_list.append(guard_r_piece3)
 
         guard_r_piece4 = Piece("RED", "Guard", 4, PiecePoint(self._all_pieces_positions[86].pos_x,
-                                                           self._all_pieces_positions[86].pos_y), "Res\\Guard-r.png")
+                                                             self._all_pieces_positions[86].pos_y), "Res\\Guard-r.png")
         self._all_piece_list.append(guard_r_piece4)
 
         #   cannonBPiece0.refine()
@@ -392,12 +435,12 @@ class CanvasBoard:
         for p in self._all_piece_list:
             # bling
             if p.get_status() == 2:
-                if p.ui_state == "Show":
+                if p.get_ui_state() == "Show":
                     self._board_canvas.itemconfig(p.image_id, state='hidden')
-                    p.ui_state = "Hide"
+                    p.set_ui_state("Hide")
                 else:
                     self._board_canvas.itemconfig(p.image_id, state='normal')
-                    p.ui_state = "Show"
+                    p.set_ui_state("Show")
             else:
                 self._board_canvas.itemconfig(p.image_id, state='normal')
         self._master.after(400, self.bling_one_piece)
@@ -411,13 +454,16 @@ class CanvasBoard:
             if not successful:
                 return False
         self._board_canvas.itemconfig(original_piece.image_id, state='normal')
-        original_piece.ui_state = "Show"
+
+        original_piece.set_ui_state("Show")
 
         self._board_canvas.move(original_piece.image_id, x_pos - original_pt.pos_x,
                                 y_pos - original_pt.pos_y)
+
         original_piece.move(x_pos, y_pos)
         original_piece.deselect()
         original_piece.set_status(0)
+
         if not undo:
             #  add one action to action list
             self._action_mgr.execute_action("Move", original_piece, original_pt, new_pt)
@@ -430,16 +476,45 @@ class CanvasBoard:
         successful = self._rule.check_knock_over(p1, p2)
         if not successful:
             return False
+        savedP1Pos = p1.position
+        savedP2Pos = p2.position
         self._board_canvas.move(p1.image_id, p2.position.pos_x - p1.position.pos_x,
                                 p2.position.pos_y - p1.position.pos_y)
         p1.set_position(p2.position)
         # dead status
         p2.set_status(1)
-        p2.set_position(PiecePoint(0, 0))
-        self._board_canvas.itemconfig(p2.image_id, state='hidden')
-        self._board_canvas.move(p2.image_id, -1 * CANVAS_WIDTH, - 1 * CANVAS_HEIGHT)
+        p2.set_position(PiecePoint(-20, -20))
+        self._board_canvas.itemconfig(p2.image_id, state='normal')
+
+        self._board_canvas.move(p2.image_id, -1 * savedP2Pos.get_x_pos() - 20, -1 * savedP2Pos.get_y_pos() - 20)
         #  add one action to action list
-        self._action_mgr.execute_action("Eat", p1, p2)
+        self._action_mgr.execute_action("Eat", p1, p2, savedP1Pos, savedP2Pos)
+        return True
+
+    def undo_knock_over(self, p1, p2, p1_pos, p2_pos):
+        new_p1_pos = PiecePoint(p1_pos)
+        new_p2_pos = PiecePoint(p2_pos)
+        # undo p1 piece
+        self._board_canvas.itemconfig(p1.image_id, state='normal')
+        p1.set_ui_state("Show")
+        self._board_canvas.move(p1.image_id, new_p1_pos.get_x_pos() - p1.get_position().get_x_pos(),
+                                new_p1_pos.get_y_pos() - p1.get_position().get_y_pos())
+
+        p1.set_position(new_p1_pos)
+        p1.deselect()
+        p1.set_status(0)
+
+        # undo p2 piece
+        self._board_canvas.itemconfig(p2.image_id, state='normal')
+        p2.set_ui_state("Show")
+        self._board_canvas.move(p2.image_id, new_p2_pos.get_x_pos() - p2.get_position().get_x_pos(),
+                                new_p2_pos.get_y_pos() - p2.get_position().get_y_pos())
+
+        p2.set_position(new_p2_pos)
+        p2.deselect()
+        p2.set_status(0)
+
+        self._rule.switch_player()
         return True
 
     def handle_current_piece(self, x, y):
@@ -480,8 +555,6 @@ class CanvasBoard:
         for p in self._all_piece_list:
             p.deselect()
 
-
-
     def click_on_canvas(self, event):
         click_in_piece = False
         x = event.x
@@ -507,6 +580,7 @@ class CanvasBoard:
                 if p.is_selected():
                     p.deselect()
                 else:
+
                     p.select()
                     p.set_status(2)  # bling it
                     if pre_selected_piece is not None:
@@ -520,4 +594,3 @@ class CanvasBoard:
 
     def set_action_manager(self, action_manager):
         self._action_mgr = action_manager
-

@@ -2,9 +2,14 @@ class PiecePoint:
     pos_x = 0
     pos_y = 0
 
-    def __init__(self, x, y):
-        self.pos_x = x
-        self.pos_y = y
+    def __init__(self, *args):
+        paracount = len(args)
+        if paracount == 2:
+            self.pos_x = args[0]
+            self.pos_y = args[1]
+        elif paracount == 1:
+            self.pos_x = args[0].get_x_pos()
+            self.pos_y = args[0].get_y_pos()
 
     def set_x_pos(self, x):
         self.pos_x = x

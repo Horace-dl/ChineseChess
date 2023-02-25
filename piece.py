@@ -11,8 +11,8 @@ class Piece:
     image_path = ""
     image_in_canvas = object
     resized_image_in_canvas = object
-    ui_state = ""
     image_id = 0
+    _ui_state = ""
     _name = ""
     _id = 0
     _status = 0  # 0: live, 1: dead, 2:bling, 3: moving
@@ -26,12 +26,15 @@ class Piece:
         self._id = id_val
         self.position = pt
         self.image_path = image
-        self.ui_state = "Show"
+        self._ui_state = "Show"
         self._status = 0
         self._original_position = PiecePoint(pt.pos_x, pt.pos_y)
 
     def set_position(self, pt):
         self.position = pt
+
+    def get_position(self):
+        return self.position
 
     def set_image(self, file_name):
         self.image_path = file_name
@@ -41,6 +44,12 @@ class Piece:
 
     def get_status(self):
         return self._status
+
+    def get_ui_state(self):
+        return self._ui_state
+
+    def set_ui_state(self, state):
+        self._ui_state = state
 
     def get_name(self):
         return self._name
@@ -90,5 +99,3 @@ class Piece:
         self.position.pos_y = y
         self._move_steps = self._move_steps + 1
         pass
-
-
