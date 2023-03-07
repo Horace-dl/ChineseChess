@@ -476,19 +476,20 @@ class CanvasBoard:
         successful = self._rule.check_knock_over(p1, p2)
         if not successful:
             return False
-        savedP1Pos = p1.position
-        savedP2Pos = p2.position
+        saved_p1_pos = p1.position
+        saved_p2_pos = p2.position
         self._board_canvas.move(p1.image_id, p2.position.pos_x - p1.position.pos_x,
                                 p2.position.pos_y - p1.position.pos_y)
-        p1.set_position(p2.position)
+        p1.move(saved_p2_pos.pos_x, saved_p2_pos.pos_y)
+
         # dead status
         p2.set_status(1)
         p2.set_position(PiecePoint(-20, -20))
         self._board_canvas.itemconfig(p2.image_id, state='normal')
 
-        self._board_canvas.move(p2.image_id, -1 * savedP2Pos.get_x_pos() - 20, -1 * savedP2Pos.get_y_pos() - 20)
+        self._board_canvas.move(p2.image_id, -1 * saved_p2_pos.get_x_pos() - 20, -1 * saved_p2_pos.get_y_pos() - 20)
         #  add one action to action list
-        self._action_mgr.execute_action("Eat", p1, p2, savedP1Pos, savedP2Pos)
+        self._action_mgr.execute_action("Eat", p1, p2, saved_p1_pos, saved_p2_pos)
         return True
 
     def undo_knock_over(self, p1, p2, p1_pos, p2_pos):
@@ -592,5 +593,19 @@ class CanvasBoard:
         if not click_in_piece:
             self.handle_current_piece(x, y)
 
+    def switch_side(self):
+        for p in self._all_piece_list:
+            st = p.get_status()
+            if st == 1: #dead
+                continue
+            else:
+                #change piece position
+                orgx = p.position.pos_x
+                orgy = p.position.pos_y
+                p.position.pos_x = self._board_inner_width * 10 - orgx
+                p.position.pos_y = self._board_inner_width * 11 - orgy
+                self._board_canvas.move(p.image_id, p.position.pos_x - orgx,
+                                        p.position.pos_y - orgy)
+        self._rule.switch_side()
     def set_action_manager(self, action_manager):
         self._action_mgr = action_manager

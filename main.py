@@ -14,7 +14,7 @@ def init_menu(master):
     menu_main.add_cascade(label="Match", menu=match_menu)
 
     view_menu = Menu(menu_main)
-    view_menu.add_command(label="Switch Side")
+    view_menu.add_command(label="Switch Side", command=switch_side_command)
     menu_main.add_cascade(label="View", menu=view_menu)
     return menu_main
 
@@ -25,6 +25,10 @@ def restart_command():
 
 def rollback_command():
     action_manager.undo_action()
+
+
+def switch_side_command():
+    action_manager.switch_side_action()
 
 
 def init_canvas(master):

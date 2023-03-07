@@ -3,16 +3,18 @@ from piece import *
 
 
 class RuleMgr:
-    _center_pos = PiecePoint(0, 0)
+    _center_pos = None
     _current_player = ""
-    _length_of_one_grid = 0
+    _length_of_one_grid = -1
     _piece_list = None
+    _switch_side_count = -1
 
     def __init__(self):
-        _currentPlayer = "RED"
-        _lengthOfOneGrid = 0
-        _pieceList = []
-
+        self._center_pos = PiecePoint(0, 0)
+        self._current_player = "RED"
+        self._length_of_one_grid = 0
+        self._piece_list = []
+        self._switch_side_count = 0
     def set_length_of_one_grid(self, length):
         self._length_of_one_grid = length
 
@@ -42,6 +44,10 @@ class RuleMgr:
 
     def get_current_player(self):
         return self._current_player
+
+    def switch_side(self):
+        self._switch_side_count = self._switch_side_count + 1
+
 
     def rook_move_rule(self, current_piece, new_pos):
         ret_val = False
@@ -249,7 +255,8 @@ class RuleMgr:
         ret_val = False
         type_of_current_piece = current_piece.get_type()
         move_steps = current_piece.get_move_steps()
-        if type_of_current_piece == "RED":
+        if (type_of_current_piece == "RED" and self._switch_side_count % 2 == 0) \
+                or (type_of_current_piece == "BLACK" and self._switch_side_count % 2 == 1):
             if current_piece.position.pos_x == new_pos.pos_x \
                     and current_piece.position.pos_y == new_pos.pos_y + self._length_of_one_grid:
                 ret_val = True
@@ -259,7 +266,8 @@ class RuleMgr:
                         current_piece.position.pos_x == new_pos.pos_x - self._length_of_one_grid
                         or current_piece.position.pos_x == new_pos.pos_x + self._length_of_one_grid):
                     ret_val = True
-        elif type_of_current_piece == "BLACK":
+        elif (type_of_current_piece == "BLACK" and self._switch_side_count % 2 == 0) \
+                or (type_of_current_piece == "RED" and self._switch_side_count % 2 == 1):
             if current_piece.position.pos_x == new_pos.pos_x \
                     and current_piece.position.pos_y == new_pos.pos_y - self._length_of_one_grid:
                 ret_val = True

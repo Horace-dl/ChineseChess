@@ -12,7 +12,7 @@ class Piece:
     image_in_canvas = object
     resized_image_in_canvas = object
     image_id = 0
-    _ui_state = ""
+    _ui_state = "" # Show ; Hide, used to indicate bling state
     _name = ""
     _id = 0
     _status = 0  # 0: live, 1: dead, 2:bling, 3: moving
@@ -98,4 +98,6 @@ class Piece:
         self.position.pos_x = x
         self.position.pos_y = y
         self._move_steps = self._move_steps + 1
-        pass
+
+    def move_with_step(self):
+        self._move_steps = self._move_steps + 1

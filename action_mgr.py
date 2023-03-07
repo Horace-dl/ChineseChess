@@ -51,4 +51,8 @@ class ActionManager:
             raise Exception("ActionManager - undo - Not supported action")
         self._action_list.pop()
 
+    def switch_side_action(self):
+        self._canvas_object.switch_side()
+        pass
+
 
