@@ -5,6 +5,7 @@ from board import *
 from PIL import ImageTk, Image
 from rule_mgr import *
 from action_mgr import *
+from playsound import playsound
 
 CANVAS_WIDTH = 600
 CANVAS_HEIGHT = 660
@@ -472,15 +473,18 @@ class CanvasBoard:
             res = False
             if target_piece is None:
                 res = self.try_move_piece(original_piece, x_pos, y_pos, False)
+                
             else:
                 res = self.try_knock_over_piece(original_piece, target_piece)
+                #play sound
+                #playsound("D:\\Python\\Projects\\Chess\\Res\\eat.WAV")
+                #why the play sound is not working??? the driver is not recognized, and searching the answer
+                
             if res:
                 self._rule.switch_player()
 
         for p in self._all_piece_list:
             p.deselect()
-
-
 
     def click_on_canvas(self, event):
         click_in_piece = False
@@ -505,7 +509,8 @@ class CanvasBoard:
             y_in_range = y_in_range_a and y_in_range_b
             if x_in_range and y_in_range:
                 if p.is_selected():
-                    p.deselect()
+                    p.deselect()                    
+
                 else:
                     p.select()
                     p.set_status(2)  # bling it
