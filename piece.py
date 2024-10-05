@@ -33,6 +33,9 @@ class Piece:
     def set_position(self, pt):
         self.position = pt
 
+    def get_position(self):
+        return self.position
+
     def set_image(self, file_name):
         self.image_path = file_name
 

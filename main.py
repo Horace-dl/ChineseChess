@@ -14,10 +14,14 @@ def init_menu(master):
     menu_main.add_cascade(label="Match", menu=match_menu)
 
     view_menu = Menu(menu_main)
-    view_menu.add_command(label="Switch Side")
+    view_menu.add_command(label="Switch Side", command=switch_side_command)
     menu_main.add_cascade(label="View", menu=view_menu)
     return menu_main
 
+
+def switch_side_command():
+    global canvas_main
+    canvas_main.switch_side()
 
 def restart_command():
     pass

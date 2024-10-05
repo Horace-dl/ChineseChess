@@ -7,6 +7,7 @@ class RuleMgr:
     _current_player = ""
     _length_of_one_grid = 0
     _piece_list = None
+    _direction = 0
 
     def __init__(self):
         _currentPlayer = "RED"
@@ -30,6 +31,12 @@ class RuleMgr:
 
     def set_center_pos(self, pt):
         self._center_pos = pt
+
+    def get_direction(self):
+        return self._direction
+
+    def set_direction(self, value):
+        self._direction = value
 
     def start_match(self):
         self._current_player = "RED"
@@ -159,8 +166,14 @@ class RuleMgr:
     def minister_move_rule(self, current_piece, new_pos):
         ret_val = False
         original_pos = current_piece.get_original_position()
-        if (new_pos.pos_y < original_pos.pos_y - self._length_of_one_grid * 4) \
-                or (new_pos.pos_y > original_pos.pos_y + self._length_of_one_grid * 4):
+        ori_x_pos = original_pos.pos_x
+        ori_y_pos = original_pos.pos_y
+        if self._direction == 1:
+            ori_x_pos = self._length_of_one_grid * 9 - ori_x_pos
+            ori_y_pos = self._length_of_one_grid * 11 - ori_y_pos
+
+        if (new_pos.pos_y < ori_y_pos - self._length_of_one_grid * 4) \
+                or (new_pos.pos_y > ori_y_pos + self._length_of_one_grid * 4):
             return ret_val
         if current_piece.position.pos_x == new_pos.pos_x + self._length_of_one_grid * 2 \
                 and current_piece.position.pos_y == new_pos.pos_y + self._length_of_one_grid * 2:
@@ -202,6 +215,8 @@ class RuleMgr:
         ret_val = False
         ori_pos_x = self._center_pos.pos_x
         ori_pos_y = current_piece.get_original_position().pos_y
+        if self._direction == 1:
+            ori_pos_y = self._length_of_one_grid * 11 - ori_pos_y
         if (new_pos.pos_x < ori_pos_x - self._length_of_one_grid) or (
                 new_pos.pos_x > ori_pos_x + self._length_of_one_grid) or (
                 new_pos.pos_y < ori_pos_y - self._length_of_one_grid * 2) or (
@@ -225,10 +240,16 @@ class RuleMgr:
     def marshal_move_rule(self, current_piece, new_pos):
         ret_val = False
         ori_pos = current_piece.get_original_position()
-        if (new_pos.pos_x < ori_pos.pos_x - self._length_of_one_grid) \
-                or (new_pos.pos_x > ori_pos.pos_x + self._length_of_one_grid) \
-                or (new_pos.pos_y < ori_pos.pos_y - self._length_of_one_grid * 2) \
-                or (new_pos.pos_y > ori_pos.pos_y + self._length_of_one_grid * 2):
+        ori_pos_x = ori_pos.pos_x
+        ori_pos_y = ori_pos.pos_y
+        if self._direction == 1:
+            ori_pos_x = self._length_of_one_grid * 10 - ori_pos_x
+            ori_pos_y = self._length_of_one_grid * 11 - ori_pos_y
+
+        if (new_pos.pos_x < ori_pos_x - self._length_of_one_grid) \
+                or (new_pos.pos_x > ori_pos_x + self._length_of_one_grid) \
+                or (new_pos.pos_y < ori_pos_y - self._length_of_one_grid * 2) \
+                or (new_pos.pos_y > ori_pos_y + self._length_of_one_grid * 2):
             return ret_val
         if current_piece.position.pos_x == new_pos.pos_x \
                 and current_piece.position.pos_y == new_pos.pos_y - self._length_of_one_grid:
@@ -249,7 +270,8 @@ class RuleMgr:
         ret_val = False
         type_of_current_piece = current_piece.get_type()
         move_steps = current_piece.get_move_steps()
-        if type_of_current_piece == "RED":
+        if (type_of_current_piece == "RED" and self._direction == 0) or \
+                (type_of_current_piece == "BLACK" and self._direction == 1):
             if current_piece.position.pos_x == new_pos.pos_x \
                     and current_piece.position.pos_y == new_pos.pos_y + self._length_of_one_grid:
                 ret_val = True
@@ -259,7 +281,8 @@ class RuleMgr:
                         current_piece.position.pos_x == new_pos.pos_x - self._length_of_one_grid
                         or current_piece.position.pos_x == new_pos.pos_x + self._length_of_one_grid):
                     ret_val = True
-        elif type_of_current_piece == "BLACK":
+        elif (type_of_current_piece == "BLACK" and self._direction == 0) or \
+                (type_of_current_piece == "RED" and self._direction == 1):
             if current_piece.position.pos_x == new_pos.pos_x \
                     and current_piece.position.pos_y == new_pos.pos_y - self._length_of_one_grid:
                 ret_val = True
@@ -278,8 +301,8 @@ class RuleMgr:
             piece_count = 0
             for pc in self._piece_list:
                 if pc.position.pos_x == new_pos.pos_x and (
-                        (pc.position.pos_y < current_piece.position.pos_y and pc.position.pos_y > new_pos.pos_y) or (
-                        pc.position.pos_y > current_piece.position.pos_y and pc.position.pos_y < new_pos.pos_y)):
+                        (current_piece.position.pos_y > pc.position.pos_y > new_pos.pos_y) or (
+                        current_piece.position.pos_y < pc.position.pos_y < new_pos.pos_y)):
                     piece_count = piece_count + 1
                     break
             if piece_count == 1:
@@ -309,10 +332,15 @@ class RuleMgr:
     def general_move_rule(self, current_piece, new_pos):
         ret_val = False
         ori_pos = current_piece.get_original_position()
-        if (new_pos.pos_x < ori_pos.pos_x - self._length_of_one_grid) or (
-                new_pos.pos_x > ori_pos.pos_x + self._length_of_one_grid) or (
-                new_pos.pos_y < ori_pos.pos_y - self._length_of_one_grid * 2) or (
-                new_pos.pos_y > ori_pos.pos_y + self._length_of_one_grid * 2):
+        ori_pos_x = ori_pos.pos_x
+        ori_pos_y = ori_pos.pos_y
+        if self._direction == 1:
+            ori_pos_x = self._length_of_one_grid * 10 - ori_pos_x
+            ori_pos_y = self._length_of_one_grid * 11 - ori_pos_y
+        if (new_pos.pos_x < ori_pos_x - self._length_of_one_grid) or (
+                new_pos.pos_x > ori_pos_x + self._length_of_one_grid) or (
+                new_pos.pos_y < ori_pos_y - self._length_of_one_grid * 2) or (
+                new_pos.pos_y > ori_pos_y + self._length_of_one_grid * 2):
             return ret_val
         if current_piece.position.pos_x == new_pos.pos_x \
                 and current_piece.position.pos_y == new_pos.pos_y - self._length_of_one_grid:
@@ -388,7 +416,10 @@ class RuleMgr:
         elif piece1.position.pos_y == piece2.position.pos_y:
             found_piece_count = 0
             for pc in self._piece_list:
-                if pc.position.pos_y == piece2.position.pos_y and ((pc.position.pos_x < piece1.position.pos_x and pc.position.pos_x > piece2.position.pos_x) or (pc.position.pos_x > piece1.position.pos_x and pc.position.pos_x < piece2.position.pos_x)):
+                if pc.position.pos_y == piece2.position.pos_y and ((pc.position.pos_x < piece1.position.pos_x and
+                                                                    pc.position.pos_x > piece2.position.pos_x) or
+                                                                   (pc.position.pos_x > piece1.position.pos_x and
+                                                                    pc.position.pos_x < piece2.position.pos_x)):
                     found_piece_count = found_piece_count + 1
                     continue
             if found_piece_count == 1:

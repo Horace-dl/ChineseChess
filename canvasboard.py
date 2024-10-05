@@ -64,6 +64,7 @@ class CanvasBoard:
         self._radius = interval_x * 2 / 5
 
         self._board_model = Board()
+        self._board_model.set_internal_size(interval_x)
 
         self._rule = RuleMgr()
         self._rule.set_length_of_one_grid(interval_x)
@@ -388,6 +389,12 @@ class CanvasBoard:
         piece_object.image_id = self._board_canvas.create_image(piece_object.position.pos_x,
                                                                 piece_object.position.pos_y,
                                                                 image=piece_object.resized_image_in_canvas)
+
+    def switch_side(self):
+        self._board_model.switch_direction()
+        self._rule.set_direction(self._board_model.direction)
+        for pc in self._all_piece_list:
+            self.refine_image(self._radius, self._radius, pc)
 
     def bling_one_piece(self):
         for p in self._all_piece_list:
