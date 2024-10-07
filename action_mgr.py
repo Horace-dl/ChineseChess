@@ -18,6 +18,9 @@ class ActionManager:
     def __remove_action(self, action):
         self._action_list.remove(action)
 
+    def clear_actions(self):
+        self._action_list.clear()
+
     def execute_action(self, action_name, *para):
         act = Action(action_name)
         if action_name == "Move":

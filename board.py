@@ -9,7 +9,9 @@ class Board:
     _internal_size = 0
 
     def __init__(self):
-        pass
+        direction = 0
+        _center_pos = PiecePoint(0, 0)
+        _internal_size = 0
 
     def set_internal_size(self, value):
         self._internal_size = value
@@ -38,8 +40,8 @@ class Board:
             pos_y = pt.get_y_pos()
             pt_new = PiecePoint(self._internal_size * 10 - pos_x, self._internal_size * 11 - pos_y)
             pc.set_position(pt_new)
-            pc
 
-    def revert(self):
-        # TODO
-        pass
+    def reset_data(self):
+        direction = 0
+        _center_pos = PiecePoint(0, 0)
+        _internal_size = 0

@@ -23,8 +23,12 @@ def switch_side_command():
     global canvas_main
     canvas_main.switch_side()
 
+
 def restart_command():
-    pass
+    global canvas_main
+    canvas_main.reset_canvas_data()
+    global action_manager
+    action_manager.clear_actions()
 
 
 def rollback_command():

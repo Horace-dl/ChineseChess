@@ -11,8 +11,10 @@ class RuleMgr:
 
     def __init__(self):
         _currentPlayer = "RED"
-        _lengthOfOneGrid = 0
+        _length_of_one_grid = 0
         _pieceList = []
+        _direction = 0
+        _center_pos = PiecePoint(0, 0)
 
     def set_length_of_one_grid(self, length):
         self._length_of_one_grid = length
@@ -40,6 +42,10 @@ class RuleMgr:
 
     def start_match(self):
         self._current_player = "RED"
+
+    def reset_data(self):
+        self._current_player = "RED"
+        self._direction = 0
 
     def switch_player(self):
         if self._current_player == "RED":
@@ -446,7 +452,10 @@ class RuleMgr:
         piece_name = p1.get_name()
         rule_function = self._switcherEat.get(piece_name)
         ret_val = False
+        ret_msg = ""
         if rule_function:
             ret_val = rule_function(self, p1, p2)
+            if p2.get_name() == "General" or p2.get_name() == "Marshal":
+                ret_msg = "Game over"
 
-        return ret_val
+        return ret_val, ret_msg

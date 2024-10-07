@@ -6,6 +6,7 @@ from PIL import ImageTk, Image
 from rule_mgr import *
 from action_mgr import *
 from playsound import playsound
+from tkinter import messagebox
 
 CANVAS_WIDTH = 600
 CANVAS_HEIGHT = 660
@@ -38,7 +39,7 @@ class CanvasBoard:
         #  init canvas
         self._board_canvas = Canvas(self._master,
                                     width=CANVAS_WIDTH,
-                                    height=CANVAS_HEIGHT, bg="#D2BE9A")
+                                    height=CANVAS_HEIGHT, bg="#08b3e1")
         self._board_canvas.pack()
 
         self.init_members()
@@ -50,6 +51,16 @@ class CanvasBoard:
 
         self.bling_one_piece()
         self._board_canvas.bind('<Button-1>', self.click_on_canvas)
+        self._board_canvas.bind("<Motion>", self.mouse_move)
+
+    def reset_canvas_data(self):
+        self._all_pieces_positions.clear()
+        self._all_piece_list.clear()
+        self.generate_piece_info()
+        for pc in self._all_piece_list:
+            self.refine_image(self._radius, self._radius, pc)
+        self._board_model.reset_data()
+        self._rule.reset_data()
 
     def draw_board(self):
 
@@ -198,11 +209,13 @@ class CanvasBoard:
                     self._board_canvas.create_line(interval_x + i * interval_x, CANVAS_HEIGHT - interval_y, interval_x + 5 * interval_x,
                                                    interval_y + interval_y * j, fill="#476042", width=2)
 
-        filename0 = PhotoImage(file="Res\\ch.png")
-        image0 = self._board_canvas.create_image(200, CANVAS_HEIGHT / 2, image=filename0)
+        #filename0 = PhotoImage(file="Res\\ch.png")
+        #image0 = self._board_canvas.create_image(200, CANVAS_HEIGHT / 2, image=filename0)
+        self._board_canvas.create_text((200, CANVAS_HEIGHT / 2), text="楚河", fill="white", font='tkDefaeultFont 30')
 
-        filename1 = PhotoImage(file="Res\\hj.png")
-        image1 = self._board_canvas.create_image(400, CANVAS_HEIGHT / 2, image=filename1)
+        #filename1 = PhotoImage(file="Res\\hj.png")
+        #image1 = self._board_canvas.create_image(400, CANVAS_HEIGHT / 2, image=filename1)
+        self._board_canvas.create_text((400, CANVAS_HEIGHT / 2), text="汉界", fill="white", font='tkDefaeultFont 30')
 
     def generate_piece_info(self):
 
@@ -435,9 +448,10 @@ class CanvasBoard:
 
     def try_knock_over_piece(self, p1, p2):
         # check if we could move to the position
-        successful = self._rule.check_knock_over(p1, p2)
+        successful, msg = self._rule.check_knock_over(p1, p2)
         if not successful:
             return False
+
         self._board_canvas.move(p1.image_id, p2.position.pos_x - p1.position.pos_x,
                                 p2.position.pos_y - p1.position.pos_y)
         p1.set_position(p2.position)
@@ -448,6 +462,9 @@ class CanvasBoard:
         self._board_canvas.move(p2.image_id, -1 * CANVAS_WIDTH, - 1 * CANVAS_HEIGHT)
         #  add one action to action list
         self._action_mgr.execute_action("Eat", p1, p2)
+        if msg == "Game over":
+            messagebox.showinfo("Game over!", "Marshal or General is killed, game over!")
+
         return True
 
     def handle_current_piece(self, x, y):
@@ -508,13 +525,8 @@ class CanvasBoard:
             player_now = self._rule.get_current_player()
             if p.get_type() != player_now:
                 continue
-            x_in_range_a = p.position.pos_x + self._radius > x
-            x_in_range_b = p.position.pos_x - self._radius < x
-            y_in_range_a = p.position.pos_y + self._radius > y
-            y_in_range_b = p.position.pos_y - self._radius < y
-            x_in_range = x_in_range_a and x_in_range_b
-            y_in_range = y_in_range_a and y_in_range_b
-            if x_in_range and y_in_range:
+            in_scope = self.check_in_piece(p, x, y)
+            if in_scope:
                 if p.is_selected():
                     p.deselect()                    
 
@@ -529,6 +541,27 @@ class CanvasBoard:
         #  move the piece
         if not click_in_piece:
             self.handle_current_piece(x, y)
+
+    def check_in_piece(self, p, x, y):
+        x_in_range_a = p.position.pos_x + self._radius > x
+        x_in_range_b = p.position.pos_x - self._radius < x
+        y_in_range_a = p.position.pos_y + self._radius > y
+        y_in_range_b = p.position.pos_y - self._radius < y
+        x_in_range = x_in_range_a and x_in_range_b
+        y_in_range = y_in_range_a and y_in_range_b
+        return x_in_range and y_in_range
+
+    def mouse_move(self, e):
+        # x pos, y pos
+        x_pos = e.x
+        y_pos = e.y
+        for p in self._all_piece_list:
+            in_scope = self.check_in_piece(p, x_pos, y_pos)
+            if in_scope:
+                self._board_canvas.config(cursor = "hand2")
+                break
+            else:
+                self._board_canvas.config(cursor="")
 
     def set_action_manager(self, action_manager):
         self._action_mgr = action_manager
