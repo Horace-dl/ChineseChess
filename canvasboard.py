@@ -452,18 +452,20 @@ class CanvasBoard:
         if not successful:
             return False
 
+        #  add one action to action list
+        self._action_mgr.execute_action("Eat", p1, p2)
+        if msg == "Game over":
+            messagebox.showinfo("Game over!", "Marshal or General is killed, game over!")
+
         self._board_canvas.move(p1.image_id, p2.position.pos_x - p1.position.pos_x,
                                 p2.position.pos_y - p1.position.pos_y)
         p1.set_position(p2.position)
         # dead status
         p2.set_status(1)
+        self._board_canvas.move(p2.image_id, -1 * p2.position.pos_x, -1 * p2.position.pos_y)
         p2.set_position(PiecePoint(0, 0))
         self._board_canvas.itemconfig(p2.image_id, state='hidden')
-        self._board_canvas.move(p2.image_id, -1 * CANVAS_WIDTH, - 1 * CANVAS_HEIGHT)
-        #  add one action to action list
-        self._action_mgr.execute_action("Eat", p1, p2)
-        if msg == "Game over":
-            messagebox.showinfo("Game over!", "Marshal or General is killed, game over!")
+        #self._board_canvas.move(p2.image_id, -1 * CANVAS_WIDTH, - 1 * CANVAS_HEIGHT)
 
         return True
 

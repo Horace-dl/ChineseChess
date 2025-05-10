@@ -422,10 +422,9 @@ class RuleMgr:
         elif piece1.position.pos_y == piece2.position.pos_y:
             found_piece_count = 0
             for pc in self._piece_list:
-                if pc.position.pos_y == piece2.position.pos_y and ((pc.position.pos_x < piece1.position.pos_x and
-                                                                    pc.position.pos_x > piece2.position.pos_x) or
-                                                                   (pc.position.pos_x > piece1.position.pos_x and
-                                                                    pc.position.pos_x < piece2.position.pos_x)):
+                if pc.position.pos_y == piece2.position.pos_y \
+                        and ((piece1.position.pos_x > pc.position.pos_x > piece2.position.pos_x)
+                             or (piece1.position.pos_x < pc.position.pos_x < piece2.position.pos_x)):
                     found_piece_count = found_piece_count + 1
                     continue
             if found_piece_count == 1:
