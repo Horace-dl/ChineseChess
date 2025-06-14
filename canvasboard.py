@@ -5,7 +5,7 @@ from board import *
 from PIL import ImageTk, Image
 from rule_mgr import *
 from action_mgr import *
-from playsound import playsound
+#from playsound import playsound
 from tkinter import messagebox
 
 CANVAS_WIDTH = 600
@@ -423,14 +423,14 @@ class CanvasBoard:
                 self._board_canvas.itemconfig(p.image_id, state='normal')
         self._master.after(400, self.bling_one_piece)
 
-    def try_move_piece(self, original_piece, x_pos, y_pos, undo):
+    def try_move_piece(self, original_piece, x_pos, y_pos):
         new_pt = PiecePoint(x_pos, y_pos)
         original_pt = PiecePoint(original_piece.position.pos_x, original_piece.position.pos_y)
-        if not undo:
-            #  check if we could move to the position
-            successful = self._rule.check_move(original_piece, new_pt)
-            if not successful:
-                return False
+        
+        #  check if we could move to the position
+        successful = self._rule.check_move(original_piece, new_pt)
+        if not successful:
+            return False
         self._board_canvas.itemconfig(original_piece.image_id, state='normal')
         original_piece.ui_state = "Show"
 
@@ -439,12 +439,24 @@ class CanvasBoard:
         original_piece.move(x_pos, y_pos)
         original_piece.deselect()
         original_piece.set_status(0)
-        if not undo:
-            #  add one action to action list
-            self._action_mgr.execute_action("Move", original_piece, original_pt, new_pt)
-        else:
-            self._rule.switch_player()
+        
+        #  add one action to action list
+        self._action_mgr.execute_action("Move", original_piece, original_pt, new_pt)
+                   
         return True
+
+    def try_move_piece_for_undo(self, original_piece, x_pos, y_pos, switchuser):
+        new_pt = PiecePoint(x_pos, y_pos)
+        original_pt = PiecePoint(original_piece.position.pos_x, original_piece.position.pos_y)
+        self._board_canvas.itemconfig(original_piece.image_id, state='normal')
+        original_piece.ui_state = "Show"
+        self._board_canvas.move(original_piece.image_id, x_pos - original_pt.pos_x,
+                                y_pos - original_pt.pos_y)
+        original_piece.move(x_pos, y_pos)
+        original_piece.deselect()
+        original_piece.set_status(0)
+        if switchuser:
+            self._rule.switch_player()
 
     def try_knock_over_piece(self, p1, p2):
         # check if we could move to the position
@@ -498,7 +510,7 @@ class CanvasBoard:
         if original_piece is not None:
             res = False
             if target_piece is None:
-                res = self.try_move_piece(original_piece, x_pos, y_pos, False)
+                res = self.try_move_piece(original_piece, x_pos, y_pos)
                 
             else:
                 res = self.try_knock_over_piece(original_piece, target_piece)

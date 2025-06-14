@@ -42,14 +42,14 @@ class ActionManager:
         if act_name == "Move":
             current_piece = act.get_piece_a()
             target_pos = act.get_original_pos()
-            self._canvas_object.try_move_piece(current_piece, target_pos.get_x_pos(), target_pos.get_y_pos(), True)
+            self._canvas_object.try_move_piece_for_undo(current_piece, target_pos.get_x_pos(), target_pos.get_y_pos(), True)
         elif act_name == "Eat":
             piece_first = act.get_piece_a()
             piece_second = act.get_piece_b()
             pos_original = act.get_original_pos()
             pos_new = act.get_new_pos()
-            self._canvas_object.try_move_piece(piece_second, pos_new.get_x_pos(), pos_new.get_y_pos(), True)
-            self._canvas_object.try_move_piece(piece_first, pos_original.get_x_pos(), pos_original.get_y_pos(), True)
+            self._canvas_object.try_move_piece_for_undo(piece_second, pos_new.get_x_pos(), pos_new.get_y_pos(), True)
+            self._canvas_object.try_move_piece_for_undo(piece_first, pos_original.get_x_pos(), pos_original.get_y_pos(), False)
 
         else:
             raise Exception("ActionManager - undo - Not supported action")
