@@ -7,6 +7,7 @@ from rule_mgr import *
 from action_mgr import *
 #from playsound import playsound
 from tkinter import messagebox
+from tkinter.colorchooser import askcolor
 
 CANVAS_WIDTH = 600
 CANVAS_HEIGHT = 660
@@ -23,6 +24,7 @@ class CanvasBoard:
     _board_inner_width = 0
     _board_inner_height = 0
     _radius = 0
+    _bg_color = "#08b3e1"
 
     def __init__(self, root):
         self._master = root
@@ -39,7 +41,7 @@ class CanvasBoard:
         #  init canvas
         self._board_canvas = Canvas(self._master,
                                     width=CANVAS_WIDTH,
-                                    height=CANVAS_HEIGHT, bg="#08b3e1")
+                                    height=CANVAS_HEIGHT, bg=self._bg_color)
         self._board_canvas.pack()
 
         self.init_members()
@@ -408,6 +410,10 @@ class CanvasBoard:
         self._rule.set_direction(self._board_model.direction)
         for pc in self._all_piece_list:
             self.refine_image(self._radius, self._radius, pc)
+
+    def change_board_color(self):
+        colors = askcolor(title="Tkinter Color Chooser")
+        self._board_canvas.configure(bg=colors[1])
 
     def bling_one_piece(self):
         for p in self._all_piece_list:

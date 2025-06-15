@@ -15,7 +15,13 @@ def init_menu(master):
 
     view_menu = Menu(menu_main)
     view_menu.add_command(label="Switch Side", command=switch_side_command)
+    view_menu.add_command(label="Change Board Color", command=change_board_color_command)
     menu_main.add_cascade(label="View", menu=view_menu)
+
+    ai_menu = Menu(menu_main)
+    ai_menu.add_command(label="machine", command=change_board_color_command)
+    menu_main.add_cascade(label="AI", menu=ai_menu)
+    
     return menu_main
 
 
@@ -23,6 +29,9 @@ def switch_side_command():
     global canvas_main
     canvas_main.switch_side()
 
+def change_board_color_command():
+    global canvas_main
+    canvas_main.change_board_color()
 
 def restart_command():
     global canvas_main
@@ -47,6 +56,7 @@ def init_canvas(master):
 def main() -> int:
     #  init tkinter object
     master = Tk()
+    master.title ("Chinese Chess v1.0") 
     master.resizable(False, False)  # disable max
     menu_main = init_menu(master)
     canvas_main = init_canvas(master)
