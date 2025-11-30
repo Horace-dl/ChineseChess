@@ -1,6 +1,7 @@
 from tkinter import *
 from canvasboard import *
 from action_mgr import *
+import ai_setting
 
 
 def init_menu(master):
@@ -19,7 +20,7 @@ def init_menu(master):
     menu_main.add_cascade(label="View", menu=view_menu)
 
     ai_menu = Menu(menu_main)
-    ai_menu.add_command(label="machine", command=change_board_color_command)
+    ai_menu.add_command(label="Machine Settings", command=lambda: ai_setting.open_settings_window(master))
     menu_main.add_cascade(label="AI", menu=ai_menu)
     
     return menu_main

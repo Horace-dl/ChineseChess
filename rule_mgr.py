@@ -23,7 +23,57 @@ class RuleMgr:
         return self._length_of_one_grid
     
     def get_possible_pos(self, type_name, index):
-        pass
+        # return a list of PiecePoint that the piece (type_name, index) can move to
+        possible = []
+        if self._piece_list is None:
+            return possible
+
+        # find the piece object by type and id
+        current_piece = None
+        for pc in self._piece_list:
+            try:
+                pc_id = pc._id
+            except Exception:
+                pc_id = None
+            if pc.get_type() == type_name and pc_id == index:
+                current_piece = pc
+                break
+
+        if current_piece is None:
+            return possible
+
+        # board grid: 9 columns (i=0..8), 10 rows (j=0..9)
+        for i in range(9):
+            for j in range(10):
+                new_x = self._length_of_one_grid * (1 + i)
+                new_y = self._length_of_one_grid * (1 + j)
+                new_pos = PiecePoint(new_x, new_y)
+
+                # check if a same-color piece occupies the target
+                occupied_same = False
+                occupied_piece = None
+                for pc in self._piece_list:
+                    if pc.position.pos_x == new_x and pc.position.pos_y == new_y and pc.get_status() == 0:
+                        occupied_piece = pc
+                        if pc.get_type() == current_piece.get_type():
+                            occupied_same = True
+                        break
+
+                if occupied_same:
+                    continue
+
+                # if occupied by opponent, use knock_over rule
+                if occupied_piece is not None and occupied_piece.get_type() != current_piece.get_type():
+                    can_eat, _ = self.check_knock_over(current_piece, occupied_piece)
+                    if can_eat:
+                        possible.append(new_pos)
+                    continue
+
+                # empty square: check normal move
+                if self.check_move(current_piece, new_pos):
+                    possible.append(new_pos)
+
+        return possible
 
     def set_pieces_list(self, piece_list):
         self._piece_list = piece_list
@@ -382,6 +432,15 @@ class RuleMgr:
         if rule_function:
             ret_val = rule_function(self, current_piece, new_pos)
 
+        # If the basic movement rule passes, ensure the move does not leave own general in check
+        if ret_val:
+            try:
+                if self._move_leaves_king_in_check(current_piece, new_pos):
+                    return False
+            except Exception:
+                # on any error do not allow the move for safety
+                return False
+
         return ret_val
 
     def rook_knock_over_rule(self, piece1, piece2):
@@ -457,4 +516,118 @@ class RuleMgr:
             if p2.get_name() == "General" or p2.get_name() == "Marshal":
                 ret_msg = "Game over"
 
+        # ensure capture does not leave own king in check (illegal)
+        if ret_val:
+            try:
+                if self._capture_leaves_king_in_check(p1, p2):
+                    return False, ""
+            except Exception:
+                return False, ""
+
         return ret_val, ret_msg
+
+    # --- Helpers for check/validation and game-over detection ---
+    def _get_king_name(self, player_type):
+        return 'Marshal' if player_type == 'RED' else 'General'
+
+    def _find_king(self, player_type):
+        king_name = self._get_king_name(player_type)
+        for pc in self._piece_list:
+            if pc.get_type() == player_type and pc.get_name() == king_name and pc.get_status() == 0:
+                return pc
+        return None
+
+    def _no_pieces_between(self, pos_a, pos_b):
+        # Only meaningful for same column (x). Check if any alive piece between y coords
+        if pos_a.pos_x != pos_b.pos_x:
+            return False
+        low = min(pos_a.pos_y, pos_b.pos_y)
+        high = max(pos_a.pos_y, pos_b.pos_y)
+        for pc in self._piece_list:
+            if pc.get_status() != 0:
+                continue
+            if pc.position.pos_x == pos_a.pos_x and low < pc.position.pos_y < high:
+                return False
+        return True
+
+    def _is_attacked(self, piece):
+        # check if any opponent piece can legally capture `piece`
+        if piece is None:
+            return False
+        opponent = 'RED' if piece.get_type() == 'BLACK' else 'BLACK'
+        # face-to-face general rule: opponent's king sees this king with no pieces between
+        opp_king = self._find_king(opponent)
+        if opp_king is not None:
+            if opp_king.position.pos_x == piece.position.pos_x and self._no_pieces_between(opp_king.position, piece.position):
+                return True
+
+        for pc in self._piece_list:
+            if pc.get_status() != 0:
+                continue
+            if pc.get_type() != opponent:
+                continue
+            ok, _ = self.check_knock_over(pc, piece)
+            if ok:
+                return True
+        return False
+
+    def _move_leaves_king_in_check(self, piece, dest_pos):
+        # simulate moving `piece` to dest_pos (without capture) and check if own king is attacked
+        orig_pos = PiecePoint(piece.position.pos_x, piece.position.pos_y)
+        piece.set_position(dest_pos)
+        injured = self._is_attacked(self._find_king(piece.get_type()))
+        piece.set_position(orig_pos)
+        return injured
+
+    def _capture_leaves_king_in_check(self, piece, target):
+        # simulate capture: remove target temporarily, move piece to target.position
+        orig_pos_piece = PiecePoint(piece.position.pos_x, piece.position.pos_y)
+        orig_status_target = target.get_status()
+        orig_pos_target = PiecePoint(target.position.pos_x, target.position.pos_y)
+
+        # perform simulated capture
+        target.set_status(1)
+        target.set_position(PiecePoint(0, 0))
+        piece.set_position(orig_pos_target)
+
+        injured = self._is_attacked(self._find_king(piece.get_type()))
+
+        # restore
+        piece.set_position(orig_pos_piece)
+        target.set_status(orig_status_target)
+        target.set_position(orig_pos_target)
+
+        return injured
+
+    def is_in_check(self, player_type):
+        king = self._find_king(player_type)
+        return self._is_attacked(king)
+
+    def has_no_legal_moves(self, player_type):
+        # if any piece of player has any legal move (including captures) then False
+        for pc in self._piece_list:
+            if pc.get_status() != 0 or pc.get_type() != player_type:
+                continue
+            try:
+                pid = getattr(pc, '_id', None)
+                poss = self.get_possible_pos(pc.get_type(), pid)
+                if poss:
+                    return False
+            except Exception:
+                continue
+        return True
+
+    def is_game_over(self):
+        # game over if any king (General/Marshal) is captured
+        for pc in self._piece_list:
+            if pc.get_name() == 'Marshal' and pc.get_status() == 1:
+                return True, 'BLACK'
+            if pc.get_name() == 'General' and pc.get_status() == 1:
+                return True, 'RED'
+
+        # checkmate: side to move has no legal moves and is in check
+        if self.is_in_check(self._current_player) and self.has_no_legal_moves(self._current_player):
+            winner = 'RED' if self._current_player == 'BLACK' else 'BLACK'
+            return True, winner
+
+        return False, None

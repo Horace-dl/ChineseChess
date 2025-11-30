@@ -8,6 +8,10 @@ from action_mgr import *
 #from playsound import playsound
 from tkinter import messagebox
 from tkinter.colorchooser import askcolor
+import ai_setting
+from machine import Machine
+import os
+import winsound
 
 CANVAS_WIDTH = 600
 CANVAS_HEIGHT = 660
@@ -36,6 +40,11 @@ class CanvasBoard:
         self._board_inner_width = 0
         self._board_inner_height = 0
         self._radius = 0
+        self._game_over = False
+        self._last_check_state = {'RED': False, 'BLACK': False}
+        # highlight items and flash jobs for check effects
+        self._check_highlights = {'RED': None, 'BLACK': None}
+        self._check_flash_jobs = {'RED': None, 'BLACK': None}
 
     def init_canvas(self):
         #  init canvas
@@ -63,6 +72,20 @@ class CanvasBoard:
             self.refine_image(self._radius, self._radius, pc)
         self._board_model.reset_data()
         self._rule.reset_data()
+        # reset game over flag and re-enable input
+        self._game_over = False
+        self._last_check_state = {'RED': False, 'BLACK': False}
+        # stop any check effects
+        try:
+            for p in ('RED', 'BLACK'):
+                self._stop_check_effect(p)
+        except Exception:
+            pass
+        try:
+            self._board_canvas.bind('<Button-1>', self.click_on_canvas)
+            self._board_canvas.bind('<Motion>', self.mouse_move)
+        except Exception:
+            pass
 
     def draw_board(self):
 
@@ -448,7 +471,18 @@ class CanvasBoard:
         
         #  add one action to action list
         self._action_mgr.execute_action("Move", original_piece, original_pt, new_pt)
-                   
+
+        # check game over
+        over, winner = self._rule.is_game_over()
+        if over:
+            self._game_over = True
+            try:
+                self._board_canvas.unbind('<Button-1>')
+                self._board_canvas.unbind('<Motion>')
+            except Exception:
+                pass
+            messagebox.showinfo('Game Over', f"{winner} wins!")
+
         return True
 
     def try_move_piece_for_undo(self, original_piece, x_pos, y_pos, switchuser):
@@ -472,8 +506,6 @@ class CanvasBoard:
 
         #  add one action to action list
         self._action_mgr.execute_action("Eat", p1, p2)
-        if msg == "Game over":
-            messagebox.showinfo("Game over!", "Marshal or General is killed, game over!")
 
         self._board_canvas.move(p1.image_id, p2.position.pos_x - p1.position.pos_x,
                                 p2.position.pos_y - p1.position.pos_y)
@@ -483,7 +515,17 @@ class CanvasBoard:
         self._board_canvas.move(p2.image_id, -1 * p2.position.pos_x, -1 * p2.position.pos_y)
         p2.set_position(PiecePoint(0, 0))
         self._board_canvas.itemconfig(p2.image_id, state='hidden')
-        #self._board_canvas.move(p2.image_id, -1 * CANVAS_WIDTH, - 1 * CANVAS_HEIGHT)
+
+        # check game over state
+        over, winner = self._rule.is_game_over()
+        if over:
+            self._game_over = True
+            try:
+                self._board_canvas.unbind('<Button-1>')
+                self._board_canvas.unbind('<Motion>')
+            except Exception:
+                pass
+            messagebox.showinfo('Game Over', f"{winner} wins!")
 
         return True
 
@@ -526,11 +568,17 @@ class CanvasBoard:
                 
             if res:
                 self._rule.switch_player()
+                # prompt if the side to move is in check
+                self._maybe_prompt_check()
+                # after a successful player move, maybe let AI play
+                self._maybe_run_ai_move()
 
         for p in self._all_piece_list:
             p.deselect()
 
     def click_on_canvas(self, event):
+        if getattr(self, '_game_over', False):
+            return
         click_in_piece = False
         x = event.x
         y = event.y
@@ -585,4 +633,150 @@ class CanvasBoard:
 
     def set_action_manager(self, action_manager):
         self._action_mgr = action_manager
+        # create a Machine instance for AI searches
+        self._machine = Machine()
+        self._game_over = False
+
+    def _maybe_run_ai_move(self):
+        # schedule AI move if configured to play the current player
+        if getattr(self, '_game_over', False):
+            return
+        machine_side = ai_setting.get_machine_side()
+        if machine_side is None:
+            return
+        current = self._rule.get_current_player()
+        if machine_side == current:
+            # schedule slightly later to allow UI update
+            self._master.after(250, self._run_ai_move)
+
+    def _maybe_prompt_check(self):
+        # Show a one-time message when a king first enters check and manage effects
+        try:
+            for player in ('RED', 'BLACK'):
+                in_check = False
+                try:
+                    in_check = self._rule.is_in_check(player)
+                except Exception:
+                    in_check = False
+
+                if in_check and not self._last_check_state.get(player, False):
+                    messagebox.showinfo('Check', f"{player} is in check!")
+                    try:
+                        self._start_check_effect(player)
+                    except Exception:
+                        pass
+
+                elif not in_check and self._last_check_state.get(player, False):
+                    try:
+                        self._stop_check_effect(player)
+                    except Exception:
+                        pass
+
+                self._last_check_state[player] = in_check
+        except Exception:
+            # don't let notification errors break the game
+            pass
+
+    def _start_check_effect(self, player):
+        # create a red oval around the king and start flashing it; also play a sound
+        king = None
+        try:
+            king = getattr(self._rule, '_find_king')(player)
+        except Exception:
+            king = None
+
+        if king is None:
+            for pc in getattr(self._rule, '_piece_list', [])[:]:
+                try:
+                    if pc.get_type() == player and (pc.get_name() == 'Marshal' or pc.get_name() == 'General') and pc.get_status() == 0:
+                        king = pc
+                        break
+                except Exception:
+                    continue
+
+        if king is None:
+            return
+
+        x = king.position.pos_x
+        y = king.position.pos_y
+        r = int(self._radius) + 6
+        item = self._board_canvas.create_oval(x - r, y - r, x + r, y + r, outline='red', width=4)
+        self._check_highlights[player] = item
+
+        # play sound asynchronously if available
+        try:
+            res_path = os.path.join(os.path.dirname(__file__), 'Res', 'eat.WAV')
+            if os.path.exists(res_path):
+                winsound.PlaySound(res_path, winsound.SND_FILENAME | winsound.SND_ASYNC)
+            else:
+                winsound.Beep(1000, 200)
+        except Exception:
+            pass
+
+        def _flash():
+            try:
+                itm = self._check_highlights.get(player)
+                if itm is None:
+                    return
+                current_state = self._board_canvas.itemcget(itm, 'state')
+                new_state = 'hidden' if current_state == 'normal' else 'normal'
+                self._board_canvas.itemconfig(itm, state=new_state)
+                job = self._master.after(400, _flash)
+                self._check_flash_jobs[player] = job
+            except Exception:
+                pass
+
+        _flash()
+
+    def _stop_check_effect(self, player):
+        try:
+            job = self._check_flash_jobs.get(player)
+            if job is not None:
+                self._master.after_cancel(job)
+                self._check_flash_jobs[player] = None
+        except Exception:
+            pass
+
+        try:
+            itm = self._check_highlights.get(player)
+            if itm is not None:
+                self._board_canvas.delete(itm)
+                self._check_highlights[player] = None
+        except Exception:
+            pass
+
+    def _run_ai_move(self):
+        # perform an AI move using alpha-beta
+        machine_side = ai_setting.get_machine_side()
+        if machine_side is None:
+            return
+        current = self._rule.get_current_player()
+        if machine_side != current:
+            return
+
+        depth = ai_setting.get_depth()
+        is_red = (current == 'RED')
+        try:
+            score, best_move = self._machine.alpha_beta(self._rule, depth=depth, maximizing_player=is_red)
+        except Exception as e:
+            import traceback
+            print("AI move failed:", e)
+            traceback.print_exc()
+            return
+
+        if not best_move:
+            return
+
+        piece, dest, captured = best_move
+        moved = False
+        if captured is not None:
+            moved = self.try_knock_over_piece(piece, captured)
+        else:
+            moved = self.try_move_piece(piece, dest.pos_x, dest.pos_y)
+
+        if moved:
+            # switch back to human
+            self._rule.switch_player()
+            # prompt if the side to move is in check
+            self._maybe_prompt_check()
 
