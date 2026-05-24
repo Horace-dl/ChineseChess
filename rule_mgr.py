@@ -626,8 +626,9 @@ class RuleMgr:
                 return True, 'RED'
 
         # checkmate: side to move has no legal moves and is in check
-        if self.is_in_check(self._current_player) and self.has_no_legal_moves(self._current_player):
-            winner = 'RED' if self._current_player == 'BLACK' else 'BLACK'
+        opponent = 'BLACK' if self._current_player == 'RED' else 'RED'
+        if self.is_in_check(opponent) and self.has_no_legal_moves(opponent):
+            winner = self._current_player
             return True, winner
 
         return False, None

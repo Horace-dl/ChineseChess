@@ -482,6 +482,7 @@ class CanvasBoard:
             except Exception:
                 pass
             messagebox.showinfo('Game Over', f"{winner} wins!")
+            return False
 
         return True
 
